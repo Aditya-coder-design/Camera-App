@@ -1,0 +1,83 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: black;
+}
+
+#record,
+#capture {
+  z-index: 3;
+  height: 4rem;
+  width: 4rem;
+  border-radius: 50%;
+  outline: none;
+  border: none;
+  position: fixed;
+  background:white;
+}
+
+#record {
+  top: 30vh;
+  right: 20px;
+}
+
+#record div {
+  height: 37%;
+  width: 42%;
+  margin: auto;
+  border-radius: 50%;
+  background: red;
+}
+
+#capture div {
+  height: 60%;
+  width: 68%;
+  margin: auto;
+  border-radius: 50%;
+  background: white;
+}
+
+#capture {
+  top: 45vh;
+  right: 20px;
+}
+
+#video-container {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+video {
+  height: 100%;
+  width: 100%;
+}
+
+.record-animation {
+  animation: zoom-in-out 3s infinite;
+}
+.capture-animation {
+  animation: zoom-in-out 3s;
+}
+
+@keyframes zoom-in-out {
+  0% {
+    transform: rotate(0deg) scale(1);
+    border-radius: 50%;
+  }
+  50% {
+    transform: rotate(90deg) scale(0);
+    border-radius: 0%;
+  }
+  100% {
+    transform:  rotate(0deg) scale(1);
+    border-radius: 0%;
+  }
+}
+
+
+
+
