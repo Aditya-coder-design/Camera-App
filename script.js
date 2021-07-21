@@ -2,31 +2,69 @@ let video = document.querySelector("video");
 let recordBtn = document.querySelector("#record");
 let recDiv = recordBtn.querySelector("div");
 let capBtn = document.querySelector("#capture");
+let capDiv = capBtn.querySelector("div");
 let body = document.querySelector("body");
 let mediaRecorder;
 let isRecording = false;
 let chunks = [];
+let appliedFilter;
+let minZoom = 1;
+let maxZoom = 3;
+let filters = document.querySelectorAll(".filter");
+let zoomInBtn = document.querySelector(".zoom-in");
+let zoomOutBtn = document.querySelector(".zoom-out");
+let currZoom = 1;
 
+zoomInBtn.addEventListener("click", function () {
+  if (currZoom < maxZoom) {
+    currZoom = currZoom + 0.1;
+  }
 
+  video.style.transform = `scale(${currZoom})`;
+});
+
+zoomOutBtn.addEventListener("click", function () {
+  if (currZoom > minZoom) {
+    currZoom = currZoom - 0.1;
+  }
+  video.style.transform = `scale(${currZoom})`;
+});
+
+for (let i = 0; i < filters.length; i++) {
+  filters[i].addEventListener("click", function (e) {
+    removeFilter();
+    appliedFilter = e.currentTarget.style.backgroundColor;
+    console.log(appliedFilter);
+
+    let div = document.createElement("div");
+    div.style.backgroundColor = appliedFilter;
+    div.classList.add("filter-div");
+    body.append(div);
+  });
+}
 
 recordBtn.addEventListener("click", function (e) {
   if (isRecording) {
     mediaRecorder.stop();
     isRecording = false;
-    recordBtn.classList.remove("record-animation");
+    recDiv.classList.remove("record-animation");
   } else {
     mediaRecorder.start();
+    appliedFilter = ""; //color remove
+    removeFilter(); //ui se remove
+    currZoom = 1;
+    video.style.transform = `scale(${currZoom})`;
     isRecording = true;
-    recordBtn.classList.add("record-animation");
+    recDiv.classList.add("record-animation");
   }
 });
 
 capBtn.addEventListener("click", function () {
   if (isRecording) return;
 
-  capBtn.classList.add("capture-animation");
+  capDiv.classList.add("capture-animation");
   setTimeout(function () {
-    capBtn.classList.remove("capture-animation");
+    capDiv.classList.remove("capture-animation");
   }, 1000);
 
   //jobhi image screen pr dikhara use save krwana
@@ -35,7 +73,20 @@ capBtn.addEventListener("click", function () {
   canvas.height = video.videoHeight;
   let tool = canvas.getContext("2d");
 
+  //origin shift
+
+  tool.translate(canvas.width / 2, canvas.height / 2);
+
+  tool.scale(currZoom, currZoom);
+
+  tool.translate(-canvas.width / 2, -canvas.height / 2);
+
   tool.drawImage(video, 0, 0);
+
+  if (appliedFilter) {
+    tool.fillStyle = appliedFilter;
+    tool.fillRect(0, 0, canvas.width, canvas.height);
+  }
 
   let link = canvas.toDataURL();
   let a = document.createElement("a");
@@ -72,4 +123,7 @@ navigator.mediaDevices
     console.log(err);
   });
 
-
+function removeFilter() {
+  let Filter = document.querySelector(".filter-div");
+  if (Filter) Filter.remove();
+}
