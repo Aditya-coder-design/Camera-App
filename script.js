@@ -1,9 +1,9 @@
+let Body = document.querySelector("body");
 let video = document.querySelector("video");
 let recordBtn = document.querySelector("#record");
 let recDiv = recordBtn.querySelector("div");
 let capBtn = document.querySelector("#capture");
 let capDiv = capBtn.querySelector("div");
-let body = document.querySelector("body");
 let mediaRecorder;
 let isRecording = false;
 let chunks = [];
@@ -14,6 +14,13 @@ let filters = document.querySelectorAll(".filter");
 let zoomInBtn = document.querySelector(".zoom-in");
 let zoomOutBtn = document.querySelector(".zoom-out");
 let currZoom = 1;
+
+let galleryBtn = document.querySelector("#gallery");
+
+galleryBtn.addEventListener("click", function () {
+  // localhost:5500/index.html => localhost:5500/gallery.html
+  location.assign("gallery.html");
+});
 
 zoomInBtn.addEventListener("click", function () {
   if (currZoom < maxZoom) {
@@ -39,7 +46,7 @@ for (let i = 0; i < filters.length; i++) {
     let div = document.createElement("div");
     div.style.backgroundColor = appliedFilter;
     div.classList.add("filter-div");
-    body.append(div);
+    Body.append(div);
   });
 }
 
@@ -88,13 +95,17 @@ capBtn.addEventListener("click", function () {
     tool.fillRect(0, 0, canvas.width, canvas.height);
   }
 
+  //for image we will save this data url in db
   let link = canvas.toDataURL();
-  let a = document.createElement("a");
-  a.href = link;
-  a.download = "img.png";
-  a.click();
-  a.remove();
-  canvas.remove();
+
+  addMedia(link, "image");
+
+  // let a = document.createElement("a");
+  // a.href = link;
+  // a.download = "img.png";
+  // a.click();
+  // a.remove();
+  // canvas.remove();
 });
 
 navigator.mediaDevices
@@ -107,14 +118,16 @@ navigator.mediaDevices
     });
 
     mediaRecorder.addEventListener("stop", function (e) {
+      //for video we will save this blob object in db
       let blob = new Blob(chunks, { type: "video/mp4" });
       chunks = [];
-      let a = document.createElement("a");
-      let url = window.URL.createObjectURL(blob);
-      a.href = url;
-      a.download = "video.mp4";
-      a.click();
-      a.remove();
+      addMedia(blob, "video");
+      // let a = document.createElement("a");
+      // let url = window.URL.createObjectURL(blob);
+      // a.href = url;
+      // a.download = "video.mp4";
+      // a.click();
+      // a.remove();
     });
 
     video.srcObject = mediaStream;
