@@ -1,6 +1,6 @@
 # Camera-App
 
-Features
+# Features
 The application can click pictures and record videos with the filters applied to it.
 
 One can zoom in, zoom out and add filters to the media.
